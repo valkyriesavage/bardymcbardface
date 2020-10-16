@@ -1,0 +1,16 @@
+{
+  "option_gameguid": "a758782e-5219-48b1-8935-217f23a1f9dc",
+  "option_game_speed": 60,
+  "option_mips_for_3d_textures": false,
+  "option_draw_colour": 4294967295,
+  "option_window_colour": 255,
+  "option_steam_app_id": "0",
+  "option_sci_usesci": false,
+  "option_author": "Valkyrie Savage",
+  "option_lastchanged": "24 September 2020 15:15:41",
+  "option_spine_licence": false,
+  "resourceVersion": "1.2",
+  "name": "Main",
+  "tags": [],
+  "resourceType": "GMMainOptions",
+}
