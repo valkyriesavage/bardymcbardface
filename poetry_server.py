@@ -5,7 +5,6 @@ import random
 import math
 import re
 import selectors
-import socket
 import sys
 import traceback
 
@@ -14,6 +13,9 @@ import markovify
 import nltk
 from nltk.corpus import wordnet as wn
 import pronouncing
+from twisted.internet.protocol import Protocol, Factory
+from twisted.internet.endpoints import TCP4ServerEndpoint
+from twisted.internet import reactor
 
 # project
 import libserver
@@ -273,51 +275,34 @@ class GutenbergRhymer:
         model = markovify.NewlineText(big_poem)
         return model
 
-''' much of this code from https://github.com/realpython/materials/blob/master/python-sockets-tutorial/appserver.py '''
-class Socketeer:
-    HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
-    PORT = 65432        # Port to listen on (non-privileged ports are > 1023)
-
+''' much of this code from https://github.com/realpython/materials/blob/master/python-sockets-tutorial/appserver.py ... but then I deleted all of it and started over. '''
+class PoemFragment(Protocol):
     def __init__(self):
-        self.sel = selectors.DefaultSelector()
-        lsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        # Avoid bind() exception: OSError: [Errno 48] Address already in use
-        lsock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        lsock.bind((self.HOST, self.PORT))
-        lsock.listen()
-        print("listening on", (self.HOST, self.PORT))
-        lsock.setblocking(False)
-        self.sel.register(lsock, selectors.EVENT_READ, data=None)
+        self.state = "POMES"
 
-    def accept_wrapper(self, sock):
-        conn, addr = sock.accept()  # Should be ready to read
-        print("accepted connection from", addr)
-        conn.setblocking(False)
-        message = libserver.Message(self.sel, conn, addr)
-        self.sel.register(conn, selectors.EVENT_READ, data=message)
+    def connectionMade(self):
+        print("made a MOTHERFUCKING CONNECTIONNNNNN")
 
-    def run(self):
-        try:
-            while True:
-                events = self.sel.select(timeout=None)
-                for key, mask in events:
-                    if key.data is None:
-                        self.accept_wrapper(key.fileobj)
-                    else:
-                        message = key.data
-                        try:
-                            message.process_events(mask)
-                        except Exception:
-                            print(
-                                "main: error: exception for",
-                                f"{message.addr}:\n{traceback.format_exc()}",
-                            )
-                            message.close()
-        except KeyboardInterrupt:
-            print("caught keyboard interrupt, exiting")
-        finally:
-            self.sel.close()
+    def connectionLost(self, reason):
+        print("LATER ASSHOOOOOOOOLLLLLLLEEEEEEEEEE")
+        pass
+
+    def dataReceived(self, line):
+        line = line.decode('utf-8')
+        print("GOT {}".format(line))
+        self.handle_POMES(line)
+
+    def handle_POMES(self, seed):
+        fucking_poetry = "assholeshithead mufuggin" #"{} WANTS TO FUCK YOUR SHIT".format(seed.strip())
+        self.transport.write(bytes(fucking_poetry,'UTF-8'))
+        print("SENT THEM {}".format(fucking_poetry))
+        self.state = "NOT POMES MOFO"
+
+class PoemFragmentFactory(Factory):
+    def buildProtocol(self, addr):
+        return PoemFragment()
 
 if __name__ == '__main__':
-    s = Socketeer()
-    s.run()
+    endpoint = TCP4ServerEndpoint(reactor, 65432)
+    endpoint.listen(PoemFragmentFactory())
+    reactor.run()

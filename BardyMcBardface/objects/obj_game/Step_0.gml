@@ -31,13 +31,12 @@ if (!connected && !connecting) {
     connecting = true;
 }
 
-if (connected && !sent) {
+if (room == rm_grassland && connected && !sent) {
     show_debug_message("Sending data to server");
     buf = buffer_create(1, buffer_grow, 1);
-    for (var i = 0; i < 20; i++) {
-        buffer_write(buf, buffer_u8, 10+i*10);
-    }
-    network_send_raw(socket, buf, buffer_tell(buf)+1);
+    //buffer_write(buf, buffer_u8, str_to_bytes("dear"));
+	buffer_write(buf, buffer_string, "dearly beloved");
+    network_send_raw(socket, buf, buffer_tell(buf));
     buffer_delete(buf);
     sent = true;
 }
