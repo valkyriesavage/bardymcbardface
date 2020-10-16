@@ -28,7 +28,6 @@ INTERLEAVE = 'ABAB{}'.format(STANZA_BREAK)
 SONNET = 'ABAB{0}CDCD{0}EFEF{0}GG'.format(STANZA_BREAK)
 
 class GutenbergRhymer:
-
     '''
         set up the corpus
     '''
@@ -275,7 +274,7 @@ class GutenbergRhymer:
         model = markovify.NewlineText(big_poem)
         return model
 
-''' much of this code from https://github.com/realpython/materials/blob/master/python-sockets-tutorial/appserver.py ... but then I deleted all of it and started over. '''
+''' this uses a library because libraries in python are Good TM '''
 class PoemFragment(Protocol):
     def __init__(self):
         self.state = "POMES"
@@ -290,15 +289,19 @@ class PoemFragment(Protocol):
     def dataReceived(self, line):
         line = line.decode('utf-8')
         print("GOT {}".format(line))
-        self.handle_POMES(line)
+        self.handle_FRAGMENT(line)
 
-    def handle_POMES(self, seed):
-        fucking_poetry = "assholeshithead mufuggin" #"{} WANTS TO FUCK YOUR SHIT".format(seed.strip())
-        self.transport.write(bytes(fucking_poetry,'UTF-8'))
-        print("SENT THEM {}".format(fucking_poetry))
+    def handle_FRAGMENT(self, seed):
+        generated_line = self.factory.g.pick_line_for_synonyms(seed)
+        self.transport.write(bytes(generated_line,'UTF-8'))
+        print("SENT THEM {}".format(generated_line))
         self.state = "NOT POMES MOFO"
 
 class PoemFragmentFactory(Factory):
+    def __init__(self):
+        self.g = GutenbergRhymer()
+        print("Poetry initialized :D")
+
     def buildProtocol(self, addr):
         return PoemFragment()
 
