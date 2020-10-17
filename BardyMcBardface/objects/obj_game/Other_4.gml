@@ -58,7 +58,7 @@ if (room == rm_grassland) {
 						  irandom_range(sprite_get_height(spr_verse),room_height-sprite_get_height(spr_verse)),
 						  "Instances", obj_verse);
 	
-	alarm[0] = room_speed * 5;
+	alarm[0] = room_speed/2;
 }
 
 if (room == rm_verses) {

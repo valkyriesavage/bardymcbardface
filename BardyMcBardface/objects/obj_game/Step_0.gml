@@ -30,13 +30,3 @@ if (!connected && !connecting) {
     network_connect_raw(socket, "127.0.0.1", 65432);
     connecting = true;
 }
-
-if (room == rm_grassland && connected && !sent) {
-    show_debug_message("Sending data to server");
-    buf = buffer_create(1, buffer_grow, 1);
-    //buffer_write(buf, buffer_u8, str_to_bytes("dear"));
-	buffer_write(buf, buffer_string, "dearly beloved");
-    network_send_raw(socket, buf, buffer_tell(buf));
-    buffer_delete(buf);
-    sent = true;
-}

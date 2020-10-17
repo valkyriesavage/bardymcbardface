@@ -38,6 +38,7 @@ class GutenbergRhymer:
         self.by_rhyming_part = self.build_rhyming_dict()
         self.forward_markov = self.build_markov()
         self.reverse_markov = self.build_markov(backwards=True)
+        self.fastlookups = self.build_fastlookups()
 
     '''
     Build up a dictionary of lists:
@@ -60,6 +61,25 @@ class GutenbergRhymer:
         return by_rhyming_part
 
     '''
+    Build up a dictionary of lists:
+        words to indexes of lines in self.all_lines that use them
+    '''
+    def build_fastlookups(self):
+        fastlookups = {}
+        seed_words = ['tiger','hero','grass','meadow',
+                      'tree','bush','insect','sun','adventure',
+                      'peril','eyes','bird','breeze','beast','flower']
+        for word in seed_words:
+            wordlist = []
+            for synonym in [word]:#self.generate_synonyms_for_word(word):
+                matcher = re.compile(r'\b{}\b'.format(synonym), re.I)
+                thing_lines = [idx for idx, line in enumerate(self.all_lines) if
+                               matcher.search(line['s'])]
+                wordlist.extend(thing_lines)
+            fastlookups[word] = wordlist
+        return fastlookups
+
+    '''
     Create a list of synonyms from a word.
     '''
     def generate_synonyms_for_word(self, word):
@@ -70,15 +90,24 @@ class GutenbergRhymer:
         return set(synonyms)
 
     '''
+    From the corpus, select a random line which contains the word or its concept
+    '''
+    def pick_line_for_word(self, word):
+        if word in self.fastlookups:
+            return self.all_lines[random.choice(self.fastlookups[word])]['s']
+        else:
+            matcher = re.compile(r'\b{}\b'.format(random.choice(synonym_seq)), re.I)
+            thing_lines = [idx for idx, line in enumerate(self.all_lines) if
+                           matcher.search(line['s'])]
+            return random.choice(thing_lines)
+
+    '''
     From the corpus, select a random line which contains one of the synonyms offered
     '''
     def pick_line_for_synonyms(self, synonym_seq):
         if not type(synonym_seq) == tuple:
-            synonym_seq = (synonym_seq)
-        thing_lines = [line['s'] for line in self.all_lines if
-                       re.search(r'\b{}\b'.format(random.choice(synonym_seq)),
-                                 line['s'], re.I)]
-        return random.choice(thing_lines)
+            synonym_seq = (synonym_seq,)
+        return self.pick_line_for_word(random.choice(synonym_seq))
 
     '''
     Given a word, pick a line that rhymes to it
@@ -276,8 +305,9 @@ class GutenbergRhymer:
 
 ''' this uses a library because libraries in python are Good TM '''
 class PoemFragment(Protocol):
-    def __init__(self):
+    def __init__(self, generator):
         self.state = "POMES"
+        self.generator = generator
 
     def connectionMade(self):
         print("made a MOTHERFUCKING CONNECTIONNNNNN")
@@ -287,12 +317,12 @@ class PoemFragment(Protocol):
         pass
 
     def dataReceived(self, line):
-        line = line.decode('utf-8')
+        line = line.decode('utf-8').strip().strip('\x00')
         print("GOT {}".format(line))
         self.handle_FRAGMENT(line)
 
     def handle_FRAGMENT(self, seed):
-        generated_line = self.factory.g.pick_line_for_synonyms(seed)
+        generated_line = self.generator.pick_line_for_word(seed)
         self.transport.write(bytes(generated_line,'UTF-8'))
         print("SENT THEM {}".format(generated_line))
         self.state = "NOT POMES MOFO"
@@ -303,7 +333,7 @@ class PoemFragmentFactory(Factory):
         print("Poetry initialized :D")
 
     def buildProtocol(self, addr):
-        return PoemFragment()
+        return PoemFragment(self.g)
 
 if __name__ == '__main__':
     endpoint = TCP4ServerEndpoint(reactor, 65432)
