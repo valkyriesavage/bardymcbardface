@@ -46,11 +46,12 @@ class GutenbergRhymer:
     '''
     def build_rhyming_dict(self):
         by_rhyming_part = defaultdict(lambda: defaultdict(list))
+        final_word = re.compile(r'(\b\w+\b)\W*$')
         for line in self.all_lines:
             text = line['s']
             if not(32 < len(text) < 48): # only use lines of uniform lengths
                 continue
-            match = re.search(r'(\b\w+\b)\W*$', text)
+            match = final_word.search(text)
             if match:
                 last_word = match.group()
                 pronunciations = pronouncing.phones_for_word(last_word)
@@ -96,8 +97,8 @@ class GutenbergRhymer:
         if word in self.fastlookups:
             return self.all_lines[random.choice(self.fastlookups[word])]['s']
         else:
-            matcher = re.compile(r'\b{}\b'.format(random.choice(synonym_seq)), re.I)
-            thing_lines = [idx for idx, line in enumerate(self.all_lines) if
+            matcher = re.compile(r'\b{}\b'.format(word), re.I)
+            thing_lines = [line['s'] for line in self.all_lines if
                            matcher.search(line['s'])]
             return random.choice(thing_lines)
 
@@ -169,7 +170,7 @@ class GutenbergRhymer:
                 line = self.forward_markov.make_sentence_with_start(random.choice(synonym_seq), strict=False, max_chars=60)
             except:
                 continue
-        return line
+            return line
 
     '''
     Given a word, try to generate a line that ends with it
