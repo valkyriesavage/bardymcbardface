@@ -22,7 +22,10 @@ if (room == rm_verses)
 				// point intersects with
 				dropped_in = collision_point(mouse_x, mouse_y, obj_poemline_blank, false, true);
 			}
-			// other right now is the poemline_blank, so lock in at the middle
+			if dropped_in == noone {
+				// wtf?
+			}
+			// lock in at the middle
 			x = dropped_in.x + dropped_in.xpad;
 			y = dropped_in.y + dropped_in.ypad;
 			dropped_in.filled_in = true;

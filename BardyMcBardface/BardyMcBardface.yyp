@@ -7,6 +7,7 @@
     {"id":{"name":"scr_utils","path":"scripts/scr_utils/scr_utils.yy",},"order":4,},
     {"id":{"name":"snd_sparkle","path":"sounds/snd_sparkle/snd_sparkle.yy",},"order":5,},
     {"id":{"name":"snd_music","path":"sounds/snd_music/snd_music.yy",},"order":3,},
+    {"id":{"name":"format","path":"scripts/format/format.yy",},"order":0,},
     {"id":{"name":"spr_grassbg","path":"sprites/spr_grassbg/spr_grassbg.yy",},"order":1,},
     {"id":{"name":"rm_splash","path":"rooms/rm_splash/rm_splash.yy",},"order":1,},
     {"id":{"name":"snd_compose","path":"sounds/snd_compose/snd_compose.yy",},"order":6,},
@@ -50,6 +51,8 @@
   "Options": [
     {"name":"macOS","path":"options/mac/options_mac.yy",},
     {"name":"Main","path":"options/main/options_main.yy",},
+    {"name":"Linux","path":"options/linux/options_linux.yy",},
+    {"name":"Windows","path":"options/windows/options_windows.yy",},
   ],
   "isDnDProject": false,
   "isEcma": false,
@@ -58,10 +61,10 @@
     "name": "Default",
     "children": [],
   },
-  "RoomOrder": [
-    {"name":"rm_splash","path":"rooms/rm_splash/rm_splash.yy",},
-    {"name":"rm_grassland","path":"rooms/rm_grassland/rm_grassland.yy",},
-    {"name":"rm_verses","path":"rooms/rm_verses/rm_verses.yy",},
+  "RoomOrderNodes": [
+    {"roomId":{"name":"rm_splash","path":"rooms/rm_splash/rm_splash.yy",},},
+    {"roomId":{"name":"rm_grassland","path":"rooms/rm_grassland/rm_grassland.yy",},},
+    {"roomId":{"name":"rm_verses","path":"rooms/rm_verses/rm_verses.yy",},},
   ],
   "Folders": [
     {"folderPath":"folders/Sprites.yy","order":1,"resourceVersion":"1.0","name":"Sprites","tags":[],"resourceType":"GMFolder",},
@@ -78,20 +81,21 @@
     {"folderPath":"folders/Animation Curves.yy","order":12,"resourceVersion":"1.0","name":"Animation Curves","tags":[],"resourceType":"GMFolder",},
     {"folderPath":"folders/Notes.yy","order":13,"resourceVersion":"1.0","name":"Notes","tags":[],"resourceType":"GMFolder",},
     {"folderPath":"folders/Extensions.yy","order":14,"resourceVersion":"1.0","name":"Extensions","tags":[],"resourceType":"GMFolder",},
+    {"folderPath":"folders/Scripts/Simple String Formatting.yy","order":5,"resourceVersion":"1.0","name":"Simple String Formatting","tags":[],"resourceType":"GMFolder",},
   ],
   "AudioGroups": [
     {"targets":461609314234257646,"resourceVersion":"1.0","name":"audiogroup_default","resourceType":"GMAudioGroup",},
   ],
   "TextureGroups": [
-    {"isScaled":true,"autocrop":true,"border":2,"mipsToGenerate":0,"targets":461609314234257646,"resourceVersion":"1.0","name":"Default","resourceType":"GMTextureGroup",},
+    {"isScaled":true,"autocrop":true,"border":2,"mipsToGenerate":0,"groupParent":null,"targets":461609314234257646,"resourceVersion":"1.0","name":"Default","resourceType":"GMTextureGroup",},
   ],
   "IncludedFiles": [
     {"CopyToMask":-1,"filePath":"datafiles","resourceVersion":"1.0","name":"snd_sparkle.flac","resourceType":"GMIncludedFile",},
   ],
   "MetaData": {
-    "IDEVersion": "2.3.0.529",
+    "IDEVersion": "2.3.1.536",
   },
-  "resourceVersion": "1.3",
+  "resourceVersion": "1.4",
   "name": "BardyMcBardface",
   "tags": [],
   "resourceType": "GMProject",
